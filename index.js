@@ -20,7 +20,7 @@ Object.defineProperty(tav, "set", {
         var incoming = process.argv.slice(2); // incoming params
 
         /**
-         * Returns extra items frob b
+         * Returns extra items from b
          * @param a
          * @param b
          * @returns {Array}
@@ -31,7 +31,7 @@ Object.defineProperty(tav, "set", {
             });
         };
         /**
-         * Check conditions. If help setted - always exit.
+         * Check conditions. Always exit if --help is set.
          * @param parsed Parsed specs
          */
         var check = function(parsed) {
@@ -98,7 +98,7 @@ Object.defineProperty(tav, "set", {
         });
         
         // Evaluate process.argv
-        var numRe = /^[0-9.]+$/;
+        var numRe = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
         incoming.filter(function(chunk) {
             return chunk != "--help" && chunk != "--";
         })
@@ -114,12 +114,11 @@ Object.defineProperty(tav, "set", {
                 } else {
                     var value = tokens.length > 2 ?
                             tokens.slice(1).join('=') : tokens[1];
-                    if (numRe.test(value)) {
-                        value = parseFloat(value); 
-                    }
                 }
                 if (self[name] instanceof Array) {
                     self[name].push(value);
+                } else if (typeof(self[name]) === 'number' && numRe.test(value)) {
+                    self[name] = parseFloat(value);
                 } else {
                     self[name] = value;
                 }
